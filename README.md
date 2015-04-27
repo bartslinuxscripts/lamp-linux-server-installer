@@ -11,8 +11,6 @@ whether it's running Debian, Ubuntu, Fedora, or CentOS.
 
    wget installed if you don't have root privileges.
 
-   A 32-bit or 64-bit Linux-based server operating system.
-
    Debian/Ubuntu/Fedora/CentOS installed on your server.
 
 - How to run:
@@ -22,7 +20,3 @@ whether it's running Debian, Ubuntu, Fedora, or CentOS.
   chmod +x installer
 
   ./installer
-
- - Notes:
-
-   Fedora and CentOS support is upcoming in the next release.
