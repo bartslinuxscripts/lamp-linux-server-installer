@@ -1,0 +1,74 @@
+#!/bin/bash
+clear
+
+releaseOS=$(gawk -F= '/^NAME/{print $2}' /etc/os-release)
+
+echo -e "\033[37m"
+echo " ╔═══════════════════════════════════════════════════════╗"
+echo " ║ Bart's Linux Scripts ║ LAMP Stack Installer           ║"
+echo " ╚═══════════════════════════════════════════════════════╝"
+echo " "
+echo -e " * Checking if Fedora / CentOS / Debian / Ubuntu.."
+
+if [[ $releaseOS == *"Fedora"* ]]; then
+  echo -e "\033[32m   Fedora"
+  echo -e "\033[37m"
+  osRoot="yum"
+elif [[ $releaseOS == *"CentOS"* ]]; then
+  echo -e "\033[32m   CentOS"
+  echo -e "\033[37m"
+  osRoot="yum"
+elif [[ $releaseOS == *"Debian"* ]]; then
+  echo -e "\033[32m   Debian"
+  echo -e "\033[37m"
+  osRoot="apt"
+elif [[ $releaseOS == *"Ubuntu"* ]]; then
+  echo -e "\033[32m   Ubuntu"
+  echo -e "\033[37m"
+  osRoot="apt"
+else
+  echo -e "\033[31m   Unsupported :("
+  exit
+fi
+
+if [ $osRoot == "yum" ]; then
+  echo -e "\033[31m   Fedora and CentOS are not supported at the moment :("
+  echo -e "\033[37m"
+  exit;
+elif [ $osRoot == "apt" ]; then
+  echo -e " * Updating package database.. "
+  apt-get update >/dev/null 2>&1 &
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Installing Apache Webserver.. "
+  apt-get -y install apache2 >/dev/null
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Installing MySQL Server.. "
+  apt-get -y install mysql-server libapache2-mod-auth-mysql php5-mysql
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Installing MySQL Databases.. "
+  mysql_install_db >/dev/null
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Securing MySQL installation.. "
+  mysql_secure_installation
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Installing PHP.. "
+  apt-get -y install php5 libapache2-mod-php5 php5-mcrypt php5-gd >/dev/null
+  sed -i "s/index.html/index.php index.html/g" /etc/apache2/mods-enabled/dir.conf
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+
+  echo -e " * Starting LAMP Stack.. "
+  service apache2 restart
+  echo -e "\033[32m   Done!"
+  echo -e "\033[37m"
+fi
